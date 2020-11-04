@@ -157,6 +157,9 @@ $(async function () {
     const result = generateStoryHTML(story);
     $allStoriesList.prepend(result);
 
+    //append to the storyList
+    storyList.stories.splice(0 , 0 , story);
+
     //append to the currentUser
     currentUser.ownStories.push(story);
 
@@ -182,8 +185,13 @@ $(async function () {
         //remove the favorite from currentUser
         StoryList.removeFromArray(currentUser.favorites, storyId);
 
-        //change the star icon style
-        $favorIcon.removeClass("fas").addClass("far");
+        if ($li.parents("#favorited-articles").length > 0) {
+          //if showing the favorite list, remove it
+          $li.remove();
+        } else {
+          //change the star icon style
+          $favorIcon.removeClass("fas").addClass("far");
+        }
       }
     } else {
       //add to the favorite
@@ -351,12 +359,7 @@ $(async function () {
    *  which will generate a storyListInstance. Then render it.
    */
 
-  async function generateStories(listType) {
-    //set the default
-    if (listType === undefined) {
-      listType = "all";
-    }
-
+  async function generateStories(listType = "all") {
     let stories = null;
     let $storyContainer = null;
 
@@ -369,10 +372,13 @@ $(async function () {
       stories = currentUser.ownStories;
       $storyContainer = $ownStories;
     } else {
-      // get an instance of StoryList
-      const storyListInstance = await StoryList.getStories();
-      // update our global variable
-      storyList = storyListInstance;
+      //get data from the server only when storyList is null
+      if (storyList === null) {
+        // get an instance of StoryList
+        const storyListInstance = await StoryList.getStories();
+        // update our global variable
+        storyList = storyListInstance;
+      }
 
       stories = storyList.stories;
       $storyContainer = $allStoriesList;

@@ -23,9 +23,16 @@ class StoryList {
   // is **not** an instance method. Rather, it is a method that is called on the
   // class directly. Why doesn't it make sense for getStories to be an instance method?
 
-  static async getStories() {
+  /**
+   * Method to make a get request to /stories and get back the list.
+   * @param {*} skip how many stories you want to skip
+   * @param {*} limit how many stories you want to get back, maxnum of 25.
+   */
+  static async getStories(skip = 0 , limit = 20) {
     // query the /stories endpoint (no auth required)
-    const response = await axios.get(`${BASE_URL}/stories`);
+    const response = await axios.get(`${BASE_URL}/stories` , {
+      params:{skip , limit}
+    });
 
     // turn the plain old story objects from the API into instances of the Story class
     const stories = response.data.stories.map((story) => new Story(story));
