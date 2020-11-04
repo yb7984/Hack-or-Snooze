@@ -123,9 +123,9 @@ class StoryList {
    * @param {String} storyId
    */
   static getFromArray(storyList, storyId) {
-    const index = StoryList.getIndex(storyList , storyId);
+    const index = StoryList.getIndex(storyList, storyId);
 
-    if (index !== -1){
+    if (index !== -1) {
       return storyList[index];
     }
     return null;
@@ -136,16 +136,15 @@ class StoryList {
    * @param {String} storyId
    */
   static removeFromArray(storyList, storyId) {
-    const index = StoryList.getIndex(storyList , storyId);
+    const index = StoryList.getIndex(storyList, storyId);
 
-    if (index !== -1){
-      storyList.splice(index , 1);
+    if (index !== -1) {
+      storyList.splice(index, 1);
       return true;
     }
     return false;
   }
 
-  
   /**
    * Methord to check a story if it is in a story array
    * @param {Array of Story} storyList
@@ -214,11 +213,11 @@ class User {
    * - name: the user's full name
    */
 
-  static async update(token , username, name) {
+  static async update(token, username, name) {
     const response = await axios.patch(`${BASE_URL}/users/${username}`, {
       token,
       user: {
-        name
+        name,
       },
     });
 
@@ -235,28 +234,28 @@ class User {
    */
 
   static async login(username, password) {
-    const response = await axios.post(`${BASE_URL}/login`, {
-      user: {
-        username,
-        password,
-      },
-    });
+      const response = await axios.post(`${BASE_URL}/login`, {
+        user: {
+          username,
+          password,
+        },
+      });
 
-    // build a new User instance from the API response
-    const existingUser = new User(response.data.user);
+      // build a new User instance from the API response
+      const existingUser = new User(response.data.user);
 
-    // instantiate Story instances for the user's favorites and ownStories
-    existingUser.favorites = response.data.user.favorites.map(
-      (s) => new Story(s)
-    );
-    existingUser.ownStories = response.data.user.stories.map(
-      (s) => new Story(s)
-    );
+      // instantiate Story instances for the user's favorites and ownStories
+      existingUser.favorites = response.data.user.favorites.map(
+        (s) => new Story(s)
+      );
+      existingUser.ownStories = response.data.user.stories.map(
+        (s) => new Story(s)
+      );
 
-    // attach the token to the newUser instance for convenience
-    existingUser.loginToken = response.data.token;
+      // attach the token to the newUser instance for convenience
+      existingUser.loginToken = response.data.token;
 
-    return existingUser;
+      return existingUser;
   }
 
   /** Get user instance for the logged-in-user.

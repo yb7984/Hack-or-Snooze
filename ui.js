@@ -34,12 +34,23 @@ $(async function () {
     const username = $("#login-username").val();
     const password = $("#login-password").val();
 
-    // call the login static method to build a user instance
-    const userInstance = await User.login(username, password);
-    // set the global user to the user instance
-    currentUser = userInstance;
-    syncCurrentUserToLocalStorage();
-    loginAndSubmitForm();
+    try {
+      // call the login static method to build a user instance
+      const userInstance = await User.login(username, password);
+
+      // set the global user to the user instance
+      currentUser = userInstance;
+      syncCurrentUserToLocalStorage();
+      loginAndSubmitForm();
+    } catch (err) {
+      if (err.indexOf("404") !== -1) {
+        alert(`Account ${username} does not exist. Please try again!`);
+      } else if (err.message.indexOf("401") !== -1) {
+        alert("username and password didn't match. Please try again!");
+      } else {
+        alert("Login Failed!Please try again!");
+      }
+    }
   });
 
   /**
@@ -55,14 +66,24 @@ $(async function () {
     let username = $("#create-account-username").val();
     let password = $("#create-account-password").val();
 
-    // call the create method, which calls the API and then builds a new user instance
-    const newUser = await User.create(username, password, name);
-    currentUser = newUser;
-    syncCurrentUserToLocalStorage();
-    loginAndSubmitForm();
+    try {
+      // call the create method, which calls the API and then builds a new user instance
+      const newUser = await User.create(username, password, name);
+
+      currentUser = newUser;
+      syncCurrentUserToLocalStorage();
+      loginAndSubmitForm();
+    } catch (err) {
+      console.log(err.message);
+      if (err.indexOf("409") !== -1) {
+        //conflict
+        alert(`username ${username}" already exists. Please try another one!`);
+      } else {
+        alert(`Failure to create the account. Please try again!`);
+      }
+    }
   });
 
-  
   /**
    * Event listener for edit user profile.
    *  If successfully we will setup a updated user instance
@@ -74,11 +95,21 @@ $(async function () {
     // grab the required fields
     let name = $("#edit-account-name").val();
 
-    // call the update method, which calls the API and then builds a new user instance
-    const user = await User.update(currentUser.loginToken , currentUser.username, name);
-    currentUser = user;
-    syncCurrentUserToLocalStorage();
-    loginAndSubmitForm();
+    try {
+      // call the update method, which calls the API and then builds a new user instance
+      const user = await User.update(
+        currentUser.loginToken,
+        currentUser.username,
+        name
+      );
+      //successfully updated
+      currentUser = user;
+      syncCurrentUserToLocalStorage();
+      loginAndSubmitForm();
+    } catch (err) {
+      //fail to update
+      alert("Updating profile Failed!Please try again!");
+    }
   });
 
   /**
@@ -187,8 +218,8 @@ $(async function () {
       $li.remove();
 
       //remove from currentUser
-      StoryList.removeFromArray(currentUser.ownStories , storyId);
-      StoryList.removeFromArray(currentUser.favorites , storyId);
+      StoryList.removeFromArray(currentUser.ownStories, storyId);
+      StoryList.removeFromArray(currentUser.favorites, storyId);
     }
   });
 
@@ -227,7 +258,6 @@ $(async function () {
     $favoriteStoriesList.show();
   });
 
-  
   /**
    * Event handler for Navigation to Own stories
    */
@@ -240,7 +270,6 @@ $(async function () {
     $ownStories.show();
   });
 
-  
   /**
    * Event handler for Navigation to Own stories
    */
@@ -296,6 +325,9 @@ $(async function () {
     // show the stories
     $allStoriesList.show();
 
+    //refresh the list
+    generateStories();
+
     // update the navigation bar
     showNavForLoggedInUser();
   }
@@ -332,12 +364,10 @@ $(async function () {
       //get the list from currentUser
       stories = currentUser.favorites;
       $storyContainer = $favoriteStoriesList;
-
     } else if (listType === "own") {
       //get the list from currentUser
       stories = currentUser.ownStories;
       $storyContainer = $ownStories;
-
     } else {
       // get an instance of StoryList
       const storyListInstance = await StoryList.getStories();
@@ -368,7 +398,8 @@ $(async function () {
     const storyMarkup = $(`
       <li id="${story.storyId}">
         <i class="${
-          (currentUser && StoryList.getIndex(currentUser.favorites, story.storyId) !== -1)
+          currentUser &&
+          StoryList.getIndex(currentUser.favorites, story.storyId) !== -1
             ? "fas"
             : "far"
         } fa-star star ${currentUser ? "" : "hidden"}"></i>
@@ -378,7 +409,7 @@ $(async function () {
         <small class="article-author">by ${story.author}</small>
         <small class="article-hostname ${hostName}">(${hostName})</small>
         <i class="fas fa-trash-alt trash-can ${
-          (currentUser && story.username === currentUser.username) ? "" : "hidden"
+          currentUser && story.username === currentUser.username ? "" : "hidden"
         }"></i>
         <small class="article-username">posted by ${story.username}</small>
       </li>
@@ -398,7 +429,7 @@ $(async function () {
       $ownStories,
       $loginForm,
       $createAccountForm,
-      $userProfile
+      $userProfile,
     ];
     elementsArr.forEach(($elem) => $elem.hide());
   }
