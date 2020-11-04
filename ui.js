@@ -13,9 +13,12 @@ $(async function () {
   const $navLogOut = $("#nav-logout");
   const $navWelcome = $("#nav-welcome");
   const $navUserProfile = $("#nav-user-profile");
+  const $loadMore = $("#articles-loadmore");
+  const STORY_PER_PAGE = 13;
 
   // global storyList variable
   let storyList = null;
+  let isLoading = false;
 
   // global currentUser variable
   let currentUser = null;
@@ -43,7 +46,7 @@ $(async function () {
       syncCurrentUserToLocalStorage();
       loginAndSubmitForm();
     } catch (err) {
-      if (err.indexOf("404") !== -1) {
+      if (err.message.indexOf("404") !== -1) {
         alert(`Account ${username} does not exist. Please try again!`);
       } else if (err.message.indexOf("401") !== -1) {
         alert("username and password didn't match. Please try again!");
@@ -74,8 +77,7 @@ $(async function () {
       syncCurrentUserToLocalStorage();
       loginAndSubmitForm();
     } catch (err) {
-      console.log(err.message);
-      if (err.indexOf("409") !== -1) {
+      if (err.message.indexOf("409") !== -1) {
         //conflict
         alert(`username ${username}" already exists. Please try another one!`);
       } else {
@@ -158,7 +160,7 @@ $(async function () {
     $allStoriesList.prepend(result);
 
     //append to the storyList
-    storyList.stories.splice(0 , 0 , story);
+    storyList.stories.splice(0, 0, story);
 
     //append to the currentUser
     currentUser.ownStories.push(story);
@@ -239,6 +241,7 @@ $(async function () {
     hideElements();
     await generateStories();
     $allStoriesList.show();
+    $loadMore.show();
   });
 
   /**
@@ -261,7 +264,7 @@ $(async function () {
   $("body").on("click", "#nav-favorite", async function () {
     hideElements();
 
-    generateStories("favorite");
+    await generateStories("favorite");
 
     $favoriteStoriesList.show();
   });
@@ -273,7 +276,7 @@ $(async function () {
   $("body").on("click", "#nav-own", async function () {
     hideElements();
 
-    generateStories("own");
+    await generateStories("own");
 
     $ownStories.show();
   });
@@ -290,6 +293,36 @@ $(async function () {
     $("#edit-account-name").val(currentUser.name);
     $("#profile-account-date-text").text(currentUser.createdAt);
   });
+
+  $("body").on("click", ".nav-icon", function (evt) {
+    evt.preventDefault();
+
+    $("#nav-list").toggle();
+  });
+
+  
+  $("body").on("click", "#nav-list", function () {
+    if ($(window).width() <= 576){
+      $("#nav-list").hide();
+    }
+  });
+
+  $(window)
+    .off("scroll")
+    .on("scroll", async function () {
+      // if the loadmore is visible
+      if (
+        $loadMore.is(":visible") &&
+        isLoading === false &&
+        $loadMore.offset().top - $(document).scrollTop() < $(window).height()
+      ) {
+        isLoading = true;
+
+        await generateStories("all", storyList.stories.length, STORY_PER_PAGE);
+
+        isLoading = false;
+      }
+    });
 
   /**
    * On page load, checks local storage to see if the user is already logged in.
@@ -359,7 +392,7 @@ $(async function () {
    *  which will generate a storyListInstance. Then render it.
    */
 
-  async function generateStories(listType = "all") {
+  async function generateStories(listType = "all", skip = 0) {
     let stories = null;
     let $storyContainer = null;
 
@@ -372,24 +405,43 @@ $(async function () {
       stories = currentUser.ownStories;
       $storyContainer = $ownStories;
     } else {
-      //get data from the server only when storyList is null
-      if (storyList === null) {
-        // get an instance of StoryList
-        const storyListInstance = await StoryList.getStories();
-        // update our global variable
-        storyList = storyListInstance;
-      }
-
-      stories = storyList.stories;
       $storyContainer = $allStoriesList;
-    }
-    // empty out that part of the page
-    $storyContainer.empty();
+      //get data from the server only when storyList is null or need to load more data
+      if (storyList === null || skip > 0) {
+        // get an instance of StoryList
+        const storyListInstance = await StoryList.getStories(
+          skip,
+          STORY_PER_PAGE
+        );
 
-    // loop through all of our stories and generate HTML for them
-    for (let story of stories) {
-      const result = generateStoryHTML(story);
-      $storyContainer.append(result);
+        stories = storyListInstance.stories;
+
+        if (stories.length < STORY_PER_PAGE) {
+          //if not enough for a page
+          $loadMore.hide();
+        }
+
+        // update our global variable
+        if (skip > 0) {
+          //if not the first page, add to the current list
+          storyList.stories = storyList.stories.concat(stories);
+        } else {
+          storyList = storyListInstance;
+        }
+      }
+    }
+
+    if (skip === 0 && stories !== null) {
+      // empty out that part of the page
+      $storyContainer.empty();
+    }
+
+    if (stories !== null) {
+      // loop through all of our stories and generate HTML for them
+      for (let story of stories) {
+        const result = generateStoryHTML(story);
+        $storyContainer.append(result);
+      }
     }
   }
 
@@ -430,6 +482,7 @@ $(async function () {
     const elementsArr = [
       $submitForm,
       $allStoriesList,
+      $loadMore ,
       $favoriteStoriesList,
       $filteredArticles,
       $ownStories,
@@ -447,9 +500,11 @@ $(async function () {
 
     $navUserProfile.html(currentUser.name);
 
-    $("#nav-create").show();
-    $("#nav-favorite").show();
-    $("#nav-own").show();
+    if ($(window).width() < 576) {
+      $(".nav-icon").show();
+    } else {
+      $("#nav-list").show();
+    }
   }
 
   /* simple function to pull the hostname from a URL */

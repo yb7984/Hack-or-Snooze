@@ -2,62 +2,65 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Hack or Snooze</title>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-    crossorigin="anonymous">
-  <link rel="stylesheet" href="style.css" type="text/css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+    integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" />
+  <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
   <nav>
     <b><a class="nav-link navbar-brand" href="#" id="nav-all">Hack or Snooze</a></b>
-    <a class="nav-link nav-link hidden" href="#" id="nav-create">Create Story</a>
-    <a class="nav-link nav-link hidden" href="#" id="nav-favorite">Favorite Stories</a>
-    <a class="nav-link nav-link hidden" href="#" id="nav-own">My Stories</a>
+    <div id="nav-list" class="hidden">
+      <a class="nav-link nav-link" href="#" id="nav-create">Create Story</a>
+      <a class="nav-link nav-link" href="#" id="nav-favorite">Favorite Stories</a>
+      <a class="nav-link nav-link" href="#" id="nav-own">My Stories</a>
+      <span class="nav-link nav-right" id="nav-welcome">
+        <a href="#" id="nav-user-profile">User Profile</a>
+        <a class="hidden nav-right" id="nav-logout" href="#">
+          <small>(logout)</small>
+        </a>
+      </span>
+    </div>
     <a class="nav-link nav-right" href="#" id="nav-login">login/create user</a>
-    <span class="nav-link nav-right hidden" id="nav-welcome">
-      <a href="#" id="nav-user-profile">User Profile</a>
-      <a class="hidden nav-right" id="nav-logout" href="#">
-        <small>(logout)</small>
-      </a>
-    </span>
+    <a href="javascript:void(0);" class="nav-icon nav-right hidden">
+      <i class="fa fa-bars"></i>
+    </a>
   </nav>
   <section class="articles-container container">
     <form action="" class="hidden" id="submit-form">
       <div>
         <label for="author">author</label>
-        <input id="author" required type="text" placeholder="author name">
+        <input id="author" required type="text" placeholder="author name" />
       </div>
       <div>
         <label for="title">title</label>
-        <input id="title" required type="text" placeholder="article title">
+        <input id="title" required type="text" placeholder="article title" />
       </div>
       <div>
         <label for="url">url</label>
-        <input id="url" required type="url" placeholder="article url">
+        <input id="url" required type="url" placeholder="article url" />
       </div>
       <button type="submit">submit</button>
-      <hr>
+      <hr />
     </form>
     <article>
       <ol id="all-articles-list" class="articles-list">
         <h3>Loading...</h3>
       </ol>
+      <h3 id="articles-loadmore">Load more</h3>
     </article>
     <article>
-      <ul id="favorited-articles" class="hidden articles-list">
-      </ul>
+      <ul id="favorited-articles" class="hidden articles-list"></ul>
     </article>
     <article>
-      <ul id="filtered-articles" class="hidden articles-list">
-      </ul>
+      <ul id="filtered-articles" class="hidden articles-list"></ul>
     </article>
     <article>
-      <ul id="my-articles" class="hidden articles-list">
-      </ul>
+      <ul id="my-articles" class="hidden articles-list"></ul>
     </article>
   </section>
   <section class="edit-article-container container">
@@ -65,7 +68,7 @@
       <h4>Article Information</h4>
       <div class="edit-input">
         <label for="edit-title">Title</label>
-        <input id="edit-title" type="text">
+        <input id="edit-title" type="text" />
         <button type="submit">change</button>
       </div>
     </form>
@@ -75,28 +78,28 @@
       <h4>Login</h4>
       <div class="login-input">
         <label for="login-username">username</label>
-        <input id="login-username" type="text">
+        <input id="login-username" type="text" />
       </div>
       <div class="login-input">
         <label for="login-password">password</label>
-        <input id="login-password" type="password">
+        <input id="login-password" type="password" />
       </div>
       <button type="submit">login</button>
-      <hr>
+      <hr />
     </form>
     <form action="#" id="create-account-form" class="account-form hidden" method="post">
       <h4>Create Account</h4>
       <div class="login-input">
         <label for="create-account-name">name</label>
-        <input id="create-account-name" type="text" required>
+        <input id="create-account-name" type="text" required />
       </div>
       <div class="login-input">
         <label for="create-account-username">username</label>
-        <input id="create-account-username" type="text" required>
+        <input id="create-account-username" type="text" required />
       </div>
       <div class="login-input">
         <label for="create-account-password">password</label>
-        <input id="create-account-password" type="password" required>
+        <input id="create-account-password" type="password" required />
       </div>
       <button type="submit">create account</button>
     </form>
@@ -108,11 +111,13 @@
         <h4>Edit Account</h4>
         <div class="login-input">
           <label for="edit-account-name">name</label>
-          <input id="edit-account-name" type="text" required>
+          <input id="edit-account-name" type="text" required />
         </div>
         <button type="submit">update account</button>
       </form>
-      <div id="profile-account-date">Account Created:<span id="profile-account-date-text"></span></div>
+      <div id="profile-account-date">
+        Account Created:<span id="profile-account-date-text"></span>
+      </div>
     </section>
   </section>
 </body>

@@ -45,6 +45,10 @@ nav {
   border-radius: 3px 3px 0 0;
 }
 
+#nav-list{
+  width: 80%;
+}
+
 .main-nav-links {
   margin: 0 15px;
 }
@@ -56,6 +60,9 @@ nav {
 
 .nav-right {
   margin-left: auto;
+}
+.nav-icon{
+  display: none;
 }
 
 .container {
@@ -227,6 +234,24 @@ form > hr {
 @media screen and (max-width: 576px) {
   body {
     margin: 0;
+  }
+
+  #nav-list{
+    display: none;
+    position: fixed;
+    top: 40px;
+    right: 20px;
+    width: 200px;
+    background-color: #ff6600;
+  }
+  .nav-link{
+    display: block;
+    height: 2em;
+    padding: 5px 20px 5px 20px;
+    margin: 5px;
+  }
+  .nav-icon{
+    display: none;
   }
 }
 

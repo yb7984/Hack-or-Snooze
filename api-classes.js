@@ -25,8 +25,8 @@ class StoryList {
 
   /**
    * Method to make a get request to /stories and get back the list.
-   * @param {*} skip how many stories you want to skip
-   * @param {*} limit how many stories you want to get back, maxnum of 25.
+   * @param {*} skip how many stories you want to skip,default is 0
+   * @param {*} limit how many stories you want to get back, default is 20,  maxnum of 25.
    */
   static async getStories(skip = 0 , limit = 20) {
     // query the /stories endpoint (no auth required)
