@@ -236,6 +236,8 @@ form > hr {
     left: 20px;
     right: 20px;
     margin: 20px;
+    background-color: white;
+    padding: 0px;
   }
   .nav-menu {
     display:block;
@@ -243,8 +245,9 @@ form > hr {
   .nav-link{
     display: block;
     height: 2em;
-    padding: 5px 20px 5px 20px;
-    margin: 5px;
+    padding: 10px 30px 10px 20px;
+    margin: 1px;
+    background-color: #ff6600;
   }
   #nav-icon{
     display: block;

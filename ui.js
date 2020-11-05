@@ -505,7 +505,8 @@ $(async function () {
       $navFavorite ,
       $navOwn ,
       $navLogOut ,
-      $navWelcome
+      $navWelcome ,
+      $navUserProfile
     ];
 
     items.forEach(item =>{
