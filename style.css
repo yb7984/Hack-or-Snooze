@@ -30,13 +30,6 @@ a:hover {
   text-decoration: underline;
 }
 
-
-.hidden {
-  display: none;
-}
-
-
-
 nav {
   display: flex;
   background-color: #ff6600;
@@ -44,11 +37,6 @@ nav {
   padding: 5px 20px;
   border-radius: 3px 3px 0 0;
 }
-
-#nav-list{
-  width: 80%;
-}
-
 .main-nav-links {
   margin: 0 15px;
 }
@@ -61,7 +49,7 @@ nav {
 .nav-right {
   margin-left: auto;
 }
-.nav-icon{
+#nav-icon{
   display: none;
 }
 
@@ -158,17 +146,17 @@ form > hr {
   cursor: pointer;
 }
 
-.star,
 .trash-can,
 .pencil {
   font-size: 0.75rem;
-  margin: 0 2px;
+  margin: 0 5px 0px 5px;
   cursor: pointer;
 }
 .star{
+  font-size: 1.2em;
   color: gold;
+  margin: 0px 2px 0px 2px;
   background-color: transparent;
-  border-style: none !important;
 }
 .trash-can:hover {
   color: crimson;
@@ -229,6 +217,10 @@ form > hr {
 }
 
 
+.hidden {
+  display: none;
+}
+
 /** responsive queries for tightening things up for mobile. */
 
 @media screen and (max-width: 576px) {
@@ -236,13 +228,17 @@ form > hr {
     margin: 0;
   }
 
-  #nav-list{
+  nav{
     display: none;
     position: fixed;
-    top: 40px;
+    z-index: 10000;
+    top: 10px;
+    left: 20px;
     right: 20px;
-    width: 200px;
-    background-color: #ff6600;
+    margin: 20px;
+  }
+  .nav-menu {
+    display:block;
   }
   .nav-link{
     display: block;
@@ -250,7 +246,16 @@ form > hr {
     padding: 5px 20px 5px 20px;
     margin: 5px;
   }
-  .nav-icon{
+  #nav-icon{
+    display: block;
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    z-index: 10000;
+    font-size: 1.5em;
+    color: #ff6600;
+  }
+  .hidden{
     display: none;
   }
 }

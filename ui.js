@@ -11,8 +11,12 @@ $(async function () {
   const $userProfile = $("#user-profile");
   const $navLogin = $("#nav-login");
   const $navLogOut = $("#nav-logout");
+  const $navCreate  = $("#nav-create");
+  const $navFavorite = $("#nav-favorite");
+  const $navOwn = $("#nav-own");
   const $navWelcome = $("#nav-welcome");
   const $navUserProfile = $("#nav-user-profile");
+  const $navIcon  = $("#nav-icon");
   const $loadMore = $("#articles-loadmore");
   const STORY_PER_PAGE = 13;
 
@@ -131,9 +135,9 @@ $(async function () {
 
   $navLogin.on("click", function () {
     // Show the Login and Create Account Forms
-    $loginForm.slideToggle();
-    $createAccountForm.slideToggle();
-    $allStoriesList.toggle();
+    $loginForm.toggleClass("hidden");
+    $createAccountForm.toggleClass("hidden");
+    $allStoriesList.toggleClass("hidden");
   });
 
   /**
@@ -240,70 +244,70 @@ $(async function () {
   $("body").on("click", "#nav-all", async function () {
     hideElements();
     await generateStories();
-    $allStoriesList.show();
-    $loadMore.show();
+    $allStoriesList.removeClass("hidden");
+    $loadMore.removeClass("hidden");
   });
 
   /**
    * Event handler for Navigation to Create Story
    */
 
-  $("body").on("click", "#nav-create", async function () {
+  $navCreate.on("click", async function () {
     hideElements();
 
-    $submitForm.show();
+    $submitForm.removeClass("hidden");
 
     await generateStories();
-    $allStoriesList.show();
+    $allStoriesList.removeClass("hidden");
   });
 
   /**
    * Event handler for Navigation to Favorite stories
    */
 
-  $("body").on("click", "#nav-favorite", async function () {
+  $navFavorite.on("click", async function () {
     hideElements();
 
     await generateStories("favorite");
 
-    $favoriteStoriesList.show();
+    $favoriteStoriesList.removeClass("hidden");
   });
 
   /**
    * Event handler for Navigation to Own stories
    */
 
-  $("body").on("click", "#nav-own", async function () {
+  $navOwn.on("click", async function () {
     hideElements();
 
     await generateStories("own");
 
-    $ownStories.show();
+    $ownStories.removeClass("hidden");
   });
 
   /**
    * Event handler for Navigation to Own stories
    */
 
-  $("body").on("click", "#nav-user-profile", async function () {
+  $navUserProfile.on("click", async function () {
     hideElements();
 
-    $userProfile.show();
+    $userProfile.removeClass("hidden");
 
     $("#edit-account-name").val(currentUser.name);
     $("#profile-account-date-text").text(currentUser.createdAt);
   });
 
-  $("body").on("click", ".nav-icon", function (evt) {
+  $navIcon.on("click", function (evt) {
     evt.preventDefault();
 
-    $("#nav-list").toggle();
+    $("nav").toggleClass("nav-menu");
   });
 
   
-  $("body").on("click", "#nav-list", function () {
+  $("body").on("click", ".nav-link", function () {
     if ($(window).width() <= 576){
-      $("#nav-list").hide();
+      $("nav").removeClass("nav-menu");
     }
   });
 
@@ -341,7 +345,7 @@ $(async function () {
 
     hideElements();
 
-    $allStoriesList.show();
+    $allStoriesList.removeClass("hidden");
 
     await generateStories();
 
@@ -356,15 +360,15 @@ $(async function () {
 
   function loginAndSubmitForm() {
     // hide the forms for logging in and signing up
-    $loginForm.hide();
-    $createAccountForm.hide();
+    $loginForm.addClass("hidden");
+    $createAccountForm.addClass("hidden");
 
     // reset those forms
     $loginForm.trigger("reset");
     $createAccountForm.trigger("reset");
 
     // show the stories
-    $allStoriesList.show();
+    $allStoriesList.removeClass("hidden");
 
     //refresh the list
     generateStories();
@@ -378,13 +382,13 @@ $(async function () {
    */
   function submitForm() {
     //hide the form
-    $submitForm.hide();
+    $submitForm.addClass("hidden");
 
     //reset the form
     $submitForm.trigger("reset");
 
     //show the stories
-    $allStoriesList.show();
+    $allStoriesList.removeClass("hidden");
   }
 
   /**
@@ -418,7 +422,7 @@ $(async function () {
 
         if (stories.length < STORY_PER_PAGE) {
           //if not enough for a page
-          $loadMore.hide();
+          $loadMore.addClass("hidden");
         }
 
         // update our global variable
@@ -488,23 +492,27 @@ $(async function () {
       $ownStories,
       $loginForm,
       $createAccountForm,
-      $userProfile,
+      $userProfile
     ];
-    elementsArr.forEach(($elem) => $elem.hide());
+    elementsArr.forEach(($elem) => $elem.addClass("hidden"));
   }
 
   function showNavForLoggedInUser() {
-    $navLogin.hide();
-    $navLogOut.show();
-    $navWelcome.show();
+    $navLogin.addClass("hidden");
+
+    const items = [
+      $navCreate ,
+      $navFavorite ,
+      $navOwn ,
+      $navLogOut ,
+      $navWelcome
+    ];
+
+    items.forEach(item =>{
+      item.removeClass("hidden");
+    });
 
     $navUserProfile.html(currentUser.name);
-
-    if ($(window).width() < 576) {
-      $(".nav-icon").show();
-    } else {
-      $("#nav-list").show();
-    }
   }
 
   /* simple function to pull the hostname from a URL */

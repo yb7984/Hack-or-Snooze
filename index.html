@@ -13,23 +13,21 @@
 
 <body>
   <nav>
-    <b><a class="nav-link navbar-brand" href="#" id="nav-all">Hack or Snooze</a></b>
-    <div id="nav-list" class="hidden">
-      <a class="nav-link nav-link" href="#" id="nav-create">Create Story</a>
-      <a class="nav-link nav-link" href="#" id="nav-favorite">Favorite Stories</a>
-      <a class="nav-link nav-link" href="#" id="nav-own">My Stories</a>
-      <span class="nav-link nav-right" id="nav-welcome">
+      <b><a class="nav-link navbar-brand" href="#" id="nav-all">Hack or Snooze</a></b>
+      <a class="nav-link nav-link hidden" href="#" id="nav-create">Create Story</a>
+      <a class="nav-link nav-link hidden" href="#" id="nav-favorite">Favorite Stories</a>
+      <a class="nav-link nav-link hidden" href="#" id="nav-own">My Stories</a>
+      <span class="nav-link nav-right hidden" id="nav-welcome">
         <a href="#" id="nav-user-profile">User Profile</a>
         <a class="hidden nav-right" id="nav-logout" href="#">
           <small>(logout)</small>
         </a>
       </span>
-    </div>
     <a class="nav-link nav-right" href="#" id="nav-login">login/create user</a>
-    <a href="javascript:void(0);" class="nav-icon nav-right hidden">
-      <i class="fa fa-bars"></i>
-    </a>
   </nav>
+  <a href="javascript:void(0);" id="nav-icon" class="nav-right">
+    <i class="fa fa-bars"></i>
+  </a>
   <section class="articles-container container">
     <form action="" class="hidden" id="submit-form">
       <div>
