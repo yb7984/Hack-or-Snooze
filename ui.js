@@ -18,7 +18,7 @@ $(async function () {
   const $navUserProfile = $("#nav-user-profile");
   const $navIcon  = $("#nav-icon");
   const $loadMore = $("#articles-loadmore");
-  const STORY_PER_PAGE = 13;
+  const STORY_PER_PAGE = 12;
 
   // global storyList variable
   let storyList = null;
@@ -135,9 +135,10 @@ $(async function () {
 
   $navLogin.on("click", function () {
     // Show the Login and Create Account Forms
-    $loginForm.toggleClass("hidden");
-    $createAccountForm.toggleClass("hidden");
-    $allStoriesList.toggleClass("hidden");
+    $loginForm.removeClass("hidden");
+    $createAccountForm.removeClass("hidden");
+    $allStoriesList.addClass("hidden");
+    $loadMore.addClass("hidden");
   });
 
   /**
@@ -259,6 +260,7 @@ $(async function () {
 
     await generateStories();
     $allStoriesList.removeClass("hidden");
+    $loadMore.removeClass("hidden");
   });
 
   /**
@@ -322,9 +324,12 @@ $(async function () {
       ) {
         isLoading = true;
 
+        $loadMore.text("Loading...");
+
         await generateStories("all", storyList.stories.length, STORY_PER_PAGE);
 
         isLoading = false;
+        $loadMore.text("Load more");
       }
     });
 
@@ -346,6 +351,7 @@ $(async function () {
     hideElements();
 
     $allStoriesList.removeClass("hidden");
+    $loadMore.removeClass("hidden");
 
     await generateStories();
 
@@ -369,6 +375,7 @@ $(async function () {
 
     // show the stories
     $allStoriesList.removeClass("hidden");
+    $loadMore.removeClass("hidden");
 
     //refresh the list
     generateStories();
@@ -389,6 +396,7 @@ $(async function () {
 
     //show the stories
     $allStoriesList.removeClass("hidden");
+    $loadMore.removeClass("hidden");
   }
 
   /**
@@ -435,9 +443,11 @@ $(async function () {
       }
     }
 
-    if (skip === 0 && stories !== null) {
+    if (skip === 0) {
       // empty out that part of the page
       $storyContainer.empty();
+
+      stories = storyList.stories;
     }
 
     if (stories !== null) {

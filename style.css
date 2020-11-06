@@ -216,6 +216,11 @@ form > hr {
   margin: 10px 0;
 }
 
+#articles-loadmore{
+  font-size: 2em;
+  text-align: center;
+  color: gold;
+}
 
 .hidden {
   display: none;
