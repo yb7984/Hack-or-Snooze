@@ -269,10 +269,10 @@ $(async function () {
 
   $navFavorite.on("click", async function () {
     hideElements();
+    $favoriteStoriesList.removeClass("hidden");
 
     await generateStories("favorite");
 
-    $favoriteStoriesList.removeClass("hidden");
   });
 
   /**
@@ -281,10 +281,10 @@ $(async function () {
 
   $navOwn.on("click", async function () {
     hideElements();
+    $ownStories.removeClass("hidden");
 
     await generateStories("own");
 
-    $ownStories.removeClass("hidden");
   });
 
   /**
@@ -306,10 +306,24 @@ $(async function () {
     $("nav").toggleClass("nav-menu");
   });
 
-  
+  //click any link hide the menu 
   $("body").on("click", ".nav-link", function () {
     if ($(window).width() <= 576){
       $("nav").removeClass("nav-menu");
+    }
+  });
+
+  //click the load more to load more stories
+  $("body").on("click" , "#articles-loadmore" , async function(){
+    if (isLoading === false){
+      isLoading = true;
+
+      $loadMore.text("Loading...");
+
+      await generateStories("all", storyList.stories.length, STORY_PER_PAGE);
+
+      isLoading = false;
+      $loadMore.text("Load more");
     }
   });
 
@@ -441,13 +455,14 @@ $(async function () {
           storyList = storyListInstance;
         }
       }
+      if (skip === 0){
+        stories = storyList.stories;
+      }
     }
 
     if (skip === 0) {
       // empty out that part of the page
       $storyContainer.empty();
-
-      stories = storyList.stories;
     }
 
     if (stories !== null) {
